@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Authors>Mauracher Simon, Faustmann Christian</Authors>
+    <Company>Kassa.Expert</Company>
+    <Description>Lt. Dokumentation Version 1.2 ab 06.09.2016</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <PackageId>KassaExpert.Util</PackageId>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/Kassa-Expert</PackageProjectUrl>
+    <Product>KassaExpert.Util</Product>
+    <RepositoryUrl>https://github.com/Kassa-Expert/Util</RepositoryUrl>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Version>1.2.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="KassaExpert.Util.LibTest" />
+    <!-- [assembly: InternalsVisibleTo("KassaExpert.Util.LibTest")] -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Portable.BouncyCastle" Version="1.8.9" />
+  </ItemGroup>
+</Project>
