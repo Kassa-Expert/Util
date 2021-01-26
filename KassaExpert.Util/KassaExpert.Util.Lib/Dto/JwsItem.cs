@@ -23,10 +23,10 @@ namespace KassaExpert.Util.Lib.Dto
             Signature = parts[2];
         }
 
-        public string Header { get; }
+        public string Header { get; internal set; }
 
-        public string Payload { get; }
+        public string Payload { get; internal set; }
 
-        public string Signature { get; }
+        public string Signature { get; internal set; }
     }
 }

@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace KassaExpert.Util.Lib.Encryption
+﻿namespace KassaExpert.Util.Lib.Encryption
 {
     public interface IEncryption
     {
         string EncryptRevenueCounter(long revenue, string cashregisterIdentification, long receiptNumber, byte[] aesKey);
-
-        /// <summary>
-        /// Used in <see cref="EncryptRevenueCounter(long, string, long, byte[])"/>
-        /// </summary>
-        byte[] EncodeRevenue(long revenue);
-
-        long DecodeRevenue(byte[] encodedRevenue);
 
         /// <summary>
         /// Used in <see cref="EncryptRevenueCounter(long, string, long, byte[])"/>

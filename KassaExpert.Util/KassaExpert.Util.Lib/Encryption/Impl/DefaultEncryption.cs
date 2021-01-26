@@ -1,4 +1,6 @@
-﻿using Org.BouncyCastle.Crypto;
+﻿using KassaExpert.Util.Lib.Encoding;
+using KassaExpert.Util.Lib.Encoding.Impl;
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.IO;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
@@ -12,31 +14,12 @@ namespace KassaExpert.Util.Lib.Encryption.Impl
 {
     internal class DefaultEncryption : IEncryption
     {
-        public byte[] EncodeRevenue(long umsatz)
-        {
-            byte[] umsatzBytes = BitConverter.GetBytes(umsatz);
-            Array.Resize(ref umsatzBytes, 16);
-
-            // reverse to get big-endian array
-            Array.Reverse(umsatzBytes, 0, umsatzBytes.Length);
-            return umsatzBytes;
-        }
-
-        public long DecodeRevenue(byte[] encodedRevenue)
-        {
-            var copyOfElement = new byte[encodedRevenue.Length];
-
-            Buffer.BlockCopy(encodedRevenue, 0, copyOfElement, 0, encodedRevenue.Length);
-
-            Array.Reverse(copyOfElement, 0, copyOfElement.Length);
-
-            return BitConverter.ToInt64(copyOfElement);
-        }
+        private readonly IEncoding<long, byte[]> _revenueEncoding = new RevenueEncoding();
 
         public byte[] GenerateIV(string cashregisterIdentification, long receiptNumber)
         {
-            byte[] inBytes = Encoding.UTF8.GetBytes(cashregisterIdentification + receiptNumber.ToString());
-            using (var sha256hash = SHA256Managed.Create())
+            byte[] inBytes = System.Text.Encoding.UTF8.GetBytes(cashregisterIdentification + receiptNumber.ToString());
+            using (var sha256hash = SHA256.Create())
             {
                 return sha256hash.ComputeHash(inBytes).Take(16).ToArray();
             }
@@ -44,20 +27,21 @@ namespace KassaExpert.Util.Lib.Encryption.Impl
 
         public string EncryptRevenueCounter(long revenue, string cashregisterIdentification, long receiptNumber, byte[] aesKey)
         {
-            var encryptedRevenueCounter = Encrypt(EncodeRevenue(revenue), GenerateIV(cashregisterIdentification, receiptNumber), aesKey);
+            var encryptedRevenueCounter = Encrypt(_revenueEncoding.Encode(revenue), GenerateIV(cashregisterIdentification, receiptNumber), aesKey);
             return Convert.ToBase64String(encryptedRevenueCounter);
         }
 
-        public byte[] Encrypt(byte[] data, byte[] iv, byte[] aesKey)
+        private const string _cipherSuite = "AES/CTR/NoPadding";
+
+        private IBufferedCipher GenerateCipher(bool encryption, byte[] iv, byte[] aesKey)
         {
-            byte[] encrypted;
-            IBufferedCipher cipher = CipherUtilities.GetCipher("AES/CTR/NoPadding");
+            var cipher = CipherUtilities.GetCipher(_cipherSuite);
 
             try
             {
                 KeyParameter skey = new KeyParameter(aesKey);
                 ParametersWithIV aesIVKeyParam = new ParametersWithIV(skey, iv);
-                cipher.Init(true, aesIVKeyParam);
+                cipher.Init(encryption, aesIVKeyParam);
             }
             catch (Exception e)
             {
@@ -65,70 +49,41 @@ namespace KassaExpert.Util.Lib.Encryption.Impl
                 throw;
             }
 
-            try
-            {
-                using (MemoryStream bOut = new MemoryStream())
-                using (CipherStream cOut = new CipherStream(bOut, null, cipher))
-                {
-                    cOut.Write(data, 0, data.Length);
-                    encrypted = bOut.ToArray();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Encrypt exception: " + e.Message);
-                throw;
-            }
+            return cipher;
+        }
 
-            return encrypted;
+        public byte[] Encrypt(byte[] data, byte[] iv, byte[] aesKey)
+        {
+            IBufferedCipher cipher = GenerateCipher(true, iv, aesKey);
+
+            byte[] outputBytes = new byte[cipher.GetOutputSize(data.Length)];
+
+            int length = cipher.ProcessBytes(data, outputBytes, 0);
+            cipher.DoFinal(outputBytes, length);
+
+            return outputBytes;
         }
 
         public byte[] Decrypt(byte[] data, byte[] iv, byte[] aesKey)
         {
-            byte[] output;
+            IBufferedCipher cipher = GenerateCipher(false, iv, aesKey);
 
-            IBufferedCipher cipher = CipherUtilities.GetCipher("AES/CTR/NoPadding");
+            byte[] comparisonBytes = new byte[cipher.GetOutputSize(data.Length)];
 
-            try
-            {
-                KeyParameter skey = new KeyParameter(aesKey);
-                ParametersWithIV aesIVKeyParam = new ParametersWithIV(skey, iv);
-                cipher.Init(false, aesIVKeyParam);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Decrypt exception (init): " + e.Message);
-                throw;
-            }
+            int length = cipher.ProcessBytes(data, comparisonBytes, 0);
+            cipher.DoFinal(comparisonBytes, length);
 
-            try
-            {
-                using (MemoryStream bIn = new MemoryStream(data, false))
-                using (CipherStream cIn = new CipherStream(bIn, cipher, null))
-                using (BinaryReader dIn = new BinaryReader(cIn))
-                {
-                    output = new byte[data.Length];
-                    Array.Clear(output, 0, output.Length);
-                    output = dIn.ReadBytes(output.Length);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Decrypt exception : " + e.Message);
-                throw;
-            }
-
-            return output;
+            return comparisonBytes;
         }
 
         public byte[] GenerateAesKey()
         {
-            using (var aesAlg = new AesCryptoServiceProvider())
+            using (var aesKey = new AesManaged())
             {
-                aesAlg.Mode = CipherMode.CFB;
-                aesAlg.IV = new byte[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-                aesAlg.GenerateKey();
-                return aesAlg.Key;
+                aesKey.KeySize = 256;
+                aesKey.GenerateKey();
+
+                return aesKey.Key;
             }
         }
     }

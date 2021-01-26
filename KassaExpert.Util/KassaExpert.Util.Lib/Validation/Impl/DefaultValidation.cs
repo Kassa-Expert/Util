@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace KassaExpert.Util.Lib.Validation.Impl
+﻿namespace KassaExpert.Util.Lib.Validation.Impl
 {
     internal class DefaultValidation : IValidation
     {
@@ -11,7 +9,7 @@ namespace KassaExpert.Util.Lib.Validation.Impl
         public bool IsUtf8String(string input)
         {
             //bei UTF8 hat jedes Zeichen exakt 1 byte -> die größe in Byte sollte also der länge entsprechen
-            return Encoding.UTF8.GetByteCount(input) == input.Length;
+            return System.Text.Encoding.UTF8.GetByteCount(input) == input.Length;
         }
     }
 }
