@@ -22,6 +22,17 @@ namespace KassaExpert.Util.Lib.Encryption.Impl
             return umsatzBytes;
         }
 
+        public long DecodeRevenue(byte[] encodedRevenue)
+        {
+            var copyOfElement = new byte[encodedRevenue.Length];
+
+            Buffer.BlockCopy(encodedRevenue, 0, copyOfElement, 0, encodedRevenue.Length);
+
+            Array.Reverse(copyOfElement, 0, copyOfElement.Length);
+
+            return BitConverter.ToInt64(copyOfElement);
+        }
+
         public byte[] GenerateIV(string cashregisterIdentification, long receiptNumber)
         {
             byte[] inBytes = Encoding.UTF8.GetBytes(cashregisterIdentification + receiptNumber.ToString());
@@ -37,7 +48,7 @@ namespace KassaExpert.Util.Lib.Encryption.Impl
             return Convert.ToBase64String(encryptedRevenueCounter);
         }
 
-        public byte[]? Encrypt(byte[] data, byte[] IV, byte[] aesKey)
+        public byte[] Encrypt(byte[] data, byte[] iv, byte[] aesKey)
         {
             byte[] encrypted;
             IBufferedCipher cipher = CipherUtilities.GetCipher("AES/CTR/NoPadding");
@@ -45,13 +56,13 @@ namespace KassaExpert.Util.Lib.Encryption.Impl
             try
             {
                 KeyParameter skey = new KeyParameter(aesKey);
-                ParametersWithIV aesIVKeyParam = new ParametersWithIV(skey, IV);
+                ParametersWithIV aesIVKeyParam = new ParametersWithIV(skey, iv);
                 cipher.Init(true, aesIVKeyParam);
             }
             catch (Exception e)
             {
                 Console.WriteLine("Encrypt exception (init): " + e.Message);
-                return null;
+                throw;
             }
 
             try
@@ -66,13 +77,13 @@ namespace KassaExpert.Util.Lib.Encryption.Impl
             catch (Exception e)
             {
                 Console.WriteLine("Encrypt exception: " + e.Message);
-                return null;
+                throw;
             }
 
             return encrypted;
         }
 
-        public byte[]? Decrypt(byte[] data, byte[] iv, byte[] aesKey)
+        public byte[] Decrypt(byte[] data, byte[] iv, byte[] aesKey)
         {
             byte[] output;
 
@@ -87,7 +98,7 @@ namespace KassaExpert.Util.Lib.Encryption.Impl
             catch (Exception e)
             {
                 Console.WriteLine("Decrypt exception (init): " + e.Message);
-                return null;
+                throw;
             }
 
             try
@@ -104,7 +115,7 @@ namespace KassaExpert.Util.Lib.Encryption.Impl
             catch (Exception e)
             {
                 Console.WriteLine("Decrypt exception : " + e.Message);
-                return null;
+                throw;
             }
 
             return output;
