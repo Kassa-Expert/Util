@@ -25,5 +25,20 @@ namespace KassaExpert.Util.LibTest.ValidationTests
 
             instance.IsUtf8String(input).Should().BeFalse();
         }
+
+        [TestCase("nonono")]
+        [TestCase("1234567890abcdefg")]
+        public void TestInvalidSerial(string invalidHex)
+        {
+            var instance = new DefaultValidation();
+            instance.IsValidHexSerial(invalidHex).Should().BeFalse();
+        }
+
+        [TestCase("1234567890abcdef")]
+        public void TestValidSerial(string validHex)
+        {
+            var instance = new DefaultValidation();
+            instance.IsValidHexSerial(validHex).Should().BeTrue();
+        }
     }
 }
