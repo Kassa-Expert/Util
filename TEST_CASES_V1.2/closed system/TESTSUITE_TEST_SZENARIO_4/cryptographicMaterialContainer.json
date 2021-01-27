@@ -1,0 +1,20 @@
+{
+  "base64AESKey" : "WQRtiiya3hYh/Uz44Bv3x8ETl1nrH6nCdErn69g5/lU=",
+  "certificateOrPublicKeyMap" : {
+    "U:ATU12345678-K0" : {
+      "id" : "U:ATU12345678-K0",
+      "signatureDeviceType" : "PUBLIC_KEY",
+      "signatureCertificateOrPublicKey" : "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE4+hiGCuzjruXzJF6ctiDNRGfr/diY+sTvtzxr5LE+VCCP9Q+1lBhDEhcy5q+yBg4mj4+KvjvT+0qUZlLYw1MUA=="
+    },
+    "U:ATU12345678-K2" : {
+      "id" : "U:ATU12345678-K2",
+      "signatureDeviceType" : "PUBLIC_KEY",
+      "signatureCertificateOrPublicKey" : "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEaz/jQEMgb6tLgBvPprtteCpzC9IfAAAfYtWt1dmmS/f9xRV6qKO/TLJ16a65aII/TrEIdpwqun4ds3EzIPZf7Q=="
+    },
+    "U:ATU12345678-K1" : {
+      "id" : "U:ATU12345678-K1",
+      "signatureDeviceType" : "PUBLIC_KEY",
+      "signatureCertificateOrPublicKey" : "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEy1Ma7H7jXr1W2RLqj3Gpcd9w5sQZl7Y6YNioXIrNXHXpqeU29EL5BPiWQel6zyRehoV3PBu4328FUmR29F2kFw=="
+    }
+  }
+}
