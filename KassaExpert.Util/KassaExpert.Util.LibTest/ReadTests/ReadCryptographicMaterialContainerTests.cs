@@ -18,6 +18,10 @@ namespace KassaExpert.Util.LibTest.ReadTests
             var directoryName = Path.Combine(baseDirectory.FullName, @"TEST_CASES_V1.2\open system");
 
             Directory.Exists(directoryName).Should().BeTrue();
+
+            var files = Helper.GetFilesInFolderSubFolder(directoryName, "cryptographicMaterialContainer.json");
+
+            files.Should().NotBeEmpty();
         }
     }
 }
