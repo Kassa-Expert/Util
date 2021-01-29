@@ -1,9 +1,14 @@
 ﻿using FluentAssertions;
+using KassaExpert.Util.Lib.Dto;
+using KassaExpert.Util.Lib.Validation;
+using KassaExpert.Util.Lib.Validation.Impl;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace KassaExpert.Util.LibTest.ReadTests
 {
@@ -11,7 +16,7 @@ namespace KassaExpert.Util.LibTest.ReadTests
     public class ReadCryptographicMaterialContainerTests
     {
         [Test]
-        public void ReadAllCryptographicMaterialContainerInDirectorySubdirectory()
+        public async Task ReadAllCryptographicMaterialContainerInDirectorySubdirectory()
         {
             var baseDirectory = Helper.TryGetSolutionDirectoryInfo().Parent;
 
@@ -22,6 +27,23 @@ namespace KassaExpert.Util.LibTest.ReadTests
             var files = Helper.GetFilesInFolderSubFolder(directoryName, "cryptographicMaterialContainer.json");
 
             files.Should().NotBeEmpty();
+
+            foreach (var file in files)
+            {
+                Console.WriteLine(file);
+
+                using (FileStream openStream = File.OpenRead(file))
+                {
+                    var data = await JsonSerializer.DeserializeAsync<CryptographicMaterialContainer>(openStream);
+
+                    data.Should().NotBeNull();
+
+                    data.Base64AESKey.Should().NotBeNullOrEmpty();
+                    Convert.FromBase64String(data.Base64AESKey).Should().NotBeNullOrEmpty();
+
+                    data.CertificateOrPublicKeyMap.Should().NotBeNull().And.NotBeEmpty();
+                }
+            }
         }
     }
 }
