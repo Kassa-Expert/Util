@@ -12,6 +12,35 @@ namespace KassaExpert.Util.Lib.Dto
     {
         public MachineReadableCode(string formatedCode)
         {
+            var data = formatedCode.Split('_');
+
+            if (data.Length != 13 && data.Length != 14)
+            {
+                throw new ArgumentOutOfRangeException(nameof(formatedCode), "Code must have correct format");
+            }
+
+            TrustProvider = TrustProvider.GetByAbbreviation(data[1].Substring(3));
+            CashboxId = data[2];
+            ReceiptNumber = data[3];
+            AustiraDate = DateTime.Parse(data[4]);
+            AmountTax20 = ReadAmount(data[5]);
+            AmountTax10 = ReadAmount(data[6]);
+            AmountTax13 = ReadAmount(data[7]);
+            AmountTax0 = ReadAmount(data[8]);
+            AmountTax19 = ReadAmount(data[9]);
+            EncryptedRevenueCounter = data[10];
+            CertificateSerialNumber = data[11];
+            SignaturePreviousReceipt = data[12];
+
+            if (data.Length == 14)
+            {
+                Signature = data[13];
+            }
+
+            decimal ReadAmount(string value)
+            {
+                return decimal.Parse(value.Replace(',', '.'), CultureInfo.InvariantCulture);
+            }
         }
 
         public MachineReadableCode(TrustProvider trustProvider, string cashboxId,
@@ -92,7 +121,7 @@ namespace KassaExpert.Util.Lib.Dto
         /// </summary>
         public string SignaturePreviousReceipt { get; }
 
-        public string? Signature { get; }
+        public string? Signature { get; internal set; }
 
         public string GetCode()
         {
