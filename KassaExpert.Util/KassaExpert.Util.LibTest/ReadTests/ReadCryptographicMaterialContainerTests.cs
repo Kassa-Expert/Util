@@ -6,6 +6,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -42,6 +43,13 @@ namespace KassaExpert.Util.LibTest.ReadTests
                     Convert.FromBase64String(data.Base64AESKey).Should().NotBeNullOrEmpty();
 
                     data.CertificateOrPublicKeyMap.Should().NotBeNull().And.NotBeEmpty();
+
+                    foreach (var certMap in data.CertificateOrPublicKeyMap)
+                    {
+                        var cert = new X509Certificate2(Convert.FromBase64String(certMap.Value.SignatureCertificateOrPublicKey));
+
+                        cert.Should().NotBeNull();
+                    }
                 }
             }
         }
