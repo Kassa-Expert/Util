@@ -67,7 +67,7 @@ namespace KassaExpert.Util.Lib.Dto
 
         /// <summary>
         /// Kassen-ID
-        /// MUST BE UTF-8 <see cref="Validation.IValidation.IsUtf8String(string)"/>
+        /// MUST BE UTF-8 <see cref="Validation.IValidation.IsValidUtf8String(string)"/>
         /// </summary>
         public string CashboxId { get; }
 

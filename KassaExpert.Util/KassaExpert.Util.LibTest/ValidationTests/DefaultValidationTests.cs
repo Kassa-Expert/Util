@@ -13,7 +13,7 @@ namespace KassaExpert.Util.LibTest.ValidationTests
         {
             var instance = new DefaultValidation();
 
-            instance.IsUtf8String(input).Should().BeTrue();
+            instance.IsValidUtf8String(input).Should().BeTrue();
         }
 
         [TestCase("𤽜")]
@@ -23,7 +23,7 @@ namespace KassaExpert.Util.LibTest.ValidationTests
         {
             var instance = new DefaultValidation();
 
-            instance.IsUtf8String(input).Should().BeFalse();
+            instance.IsValidUtf8String(input).Should().BeFalse();
         }
 
         [TestCase("nonono")]
@@ -39,6 +39,27 @@ namespace KassaExpert.Util.LibTest.ValidationTests
         {
             var instance = new DefaultValidation();
             instance.IsValidHexSerial(validHex).Should().BeTrue();
+        }
+
+        [TestCase("ATU73952234")]
+        [TestCase("ATU73519007")]
+        [TestCase("ATU67104705")]
+        public void TestValidUid(string validUid)
+        {
+            var instance = new DefaultValidation();
+            instance.IsValidUid(validUid).Should().BeTrue();
+        }
+
+        [TestCase("nonono")]
+        [TestCase("1234567890abcdefg")]
+        [TestCase("Atu12345678")]
+        [TestCase("ATU 12 345 678")]
+        [TestCase("ATU12345678 ")]
+        [TestCase("ATU12345678")]
+        public void TestInvalidUid(string invalidUid)
+        {
+            var instance = new DefaultValidation();
+            instance.IsValidUid(invalidUid).Should().BeFalse();
         }
     }
 }

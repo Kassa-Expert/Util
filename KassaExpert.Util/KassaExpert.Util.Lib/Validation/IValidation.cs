@@ -6,8 +6,10 @@ namespace KassaExpert.Util.Lib.Validation
 {
     public interface IValidation
     {
-        bool IsUtf8String(string input);
+        bool IsValidUtf8String(string input);
 
         bool IsValidHexSerial(string hexSerial);
+
+        bool IsValidUid(string uid);
     }
 }
