@@ -2,8 +2,12 @@
 
 namespace KassaExpert.Util.Lib.Encoding.Impl
 {
-    public sealed class Base64UrlEncoding : IEncoding<string, string>
+    internal sealed class Base64UrlEncoding : IEncoding<string, string>
     {
+        private static readonly Lazy<Base64UrlEncoding> _instance = new Lazy<Base64UrlEncoding>(() => new Base64UrlEncoding(), System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+
+        internal static IEncoding<string, string> GetInstance() => _instance.Value;
+
         private static readonly char[] padding = { '=' };
 
         /// <summary>

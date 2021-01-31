@@ -1,8 +1,6 @@
 ﻿using KassaExpert.Util.Lib.Date;
-using KassaExpert.Util.Lib.Date.Impl;
 using KassaExpert.Util.Lib.Enum;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
@@ -125,7 +123,7 @@ namespace KassaExpert.Util.Lib.Dto
 
         public string GetCode()
         {
-            IDate dateConverter = new DefaultDate();
+            IDate dateConverter = IDate.GetInstance();
 
             var sb = new StringBuilder();
 

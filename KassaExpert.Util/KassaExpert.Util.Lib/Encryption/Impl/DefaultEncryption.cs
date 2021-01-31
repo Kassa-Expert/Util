@@ -1,20 +1,22 @@
 ﻿using KassaExpert.Util.Lib.Encoding;
-using KassaExpert.Util.Lib.Encoding.Impl;
 using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.IO;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 using System;
-using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace KassaExpert.Util.Lib.Encryption.Impl
 {
-    internal class DefaultEncryption : IEncryption
+    internal sealed class DefaultEncryption : IEncryption
     {
-        private readonly IEncoding<long, byte[]> _revenueEncoding = new RevenueEncoding();
+        private static readonly Lazy<DefaultEncryption> _instance = new Lazy<DefaultEncryption>(() => new DefaultEncryption(), System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+
+        internal static IEncryption GetInstance() => _instance.Value;
+
+        private readonly IEncoding<long, byte[]> _revenueEncoding = IEncoding.GetRevenueEncoding();
+
+        private const string _cipherSuite = "AES/CTR/NoPadding";
 
         public byte[] GenerateIV(string cashregisterIdentification, long receiptNumber)
         {
@@ -30,8 +32,6 @@ namespace KassaExpert.Util.Lib.Encryption.Impl
             var encryptedRevenueCounter = Encrypt(_revenueEncoding.Encode(revenue), GenerateIV(cashregisterIdentification, receiptNumber), aesKey);
             return Convert.ToBase64String(encryptedRevenueCounter);
         }
-
-        private const string _cipherSuite = "AES/CTR/NoPadding";
 
         private IBufferedCipher GenerateCipher(bool encryption, byte[] iv, byte[] aesKey)
         {

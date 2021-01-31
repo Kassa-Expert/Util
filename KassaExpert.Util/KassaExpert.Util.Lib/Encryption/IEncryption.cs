@@ -2,6 +2,8 @@
 {
     public interface IEncryption
     {
+        public static IEncryption GetInstance() => Impl.DefaultEncryption.GetInstance();
+
         string EncryptRevenueCounter(long revenue, string cashregisterIdentification, long receiptNumber, byte[] aesKey);
 
         /// <summary>

@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace KassaExpert.Util.Lib.Date.Impl
 {
-    public class DefaultDate : IDate
+    internal sealed class DefaultDate : IDate
     {
+        private static Lazy<DefaultDate> _instance => new Lazy<DefaultDate>(() => new DefaultDate(), System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+
+        internal static IDate GetInstance() => _instance.Value;
+
         private const string _timeZoneString = "W. Europe Standard Time";
 
         private const string _dateFormatString = "yyyy-MM-ddTHH:mm:ss";

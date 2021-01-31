@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace KassaExpert.Util.Lib.Dto
@@ -16,6 +14,9 @@ namespace KassaExpert.Util.Lib.Dto
 
     public sealed class CertificateOrPublicKeyContainer
     {
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
+
         [JsonPropertyName("signatureDeviceType")]
         public string SignatureDeviceType { get; set; }
 

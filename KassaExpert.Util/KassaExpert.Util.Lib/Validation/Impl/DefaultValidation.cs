@@ -1,9 +1,14 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 
 namespace KassaExpert.Util.Lib.Validation.Impl
 {
-    internal class DefaultValidation : IValidation
+    internal sealed class DefaultValidation : IValidation
     {
+        private static readonly Lazy<DefaultValidation> _instance = new Lazy<DefaultValidation>(() => new DefaultValidation(), System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+
+        internal static IValidation GetInstance() => _instance.Value;
+
         /// <summary>
         /// für den Initialisierungs-Vektor wird Kassen-Identifikator+Belegnummer im UTF8-Format verwendet
         /// Es sollte kein Problem darstellen wenn zb. ein Ä verwendet wird, kann aber durchaus passieren da es nicht in der spezifikation steht

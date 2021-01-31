@@ -14,7 +14,7 @@
     <Product>KassaExpert.Util</Product>
     <RepositoryUrl>https://github.com/Kassa-Expert/Util</RepositoryUrl>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>1.2.0.1</Version>
+    <Version>1.2.0.2</Version>
     <PackageIcon>LOGO.png</PackageIcon>
   </PropertyGroup>
 

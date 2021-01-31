@@ -2,8 +2,12 @@
 
 namespace KassaExpert.Util.Lib.Encoding.Impl
 {
-    public sealed class RevenueEncoding : IEncoding<long, byte[]>
+    internal sealed class RevenueEncoding : IEncoding<long, byte[]>
     {
+        private static readonly Lazy<RevenueEncoding> _instance = new Lazy<RevenueEncoding>(() => new RevenueEncoding(), System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+
+        internal static IEncoding<long, byte[]> GetInstance() => _instance.Value;
+
         public long Decode(byte[] source)
         {
             var copyOfElement = new byte[source.Length];
